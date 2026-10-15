@@ -14,7 +14,7 @@
   {
     "supplier_gstin": "27AAAFA1234A1Z5",
     "supplier_name": "FICTIONAL ALPHA INDUSTRIAL SUPPLIES",
-    "invoice_number": "INV/ALPHA/002",
+    "invoice_number": "ALPHA/002",
     "invoice_date": "08-04-2026",
     "taxable_value": "7500.00",
     "igst": "0.00",
@@ -50,7 +50,7 @@
   {
     "supplier_gstin": "27AAAFA1234A1Z5",
     "supplier_name": "Fictional Alpha Industrial Supplies",
-    "invoice_number": "ALPHA-006-R",
+    "invoice_number": "ALPHA-ALT-006",
     "invoice_date": "18-04-2026",
     "taxable_value": "8500.00",
     "igst": "1530.00",
@@ -434,7 +434,7 @@
   {
     "supplier_gstin": "33FFFIF6789F6Z2",
     "supplier_name": "Fictional Fable Logistics Lab",
-    "invoice_number": "FABLE-005-R",
+    "invoice_number": "FABLE-ALT-005",
     "invoice_date": "25-04-2026",
     "taxable_value": "5800.00",
     "igst": "0.00",
