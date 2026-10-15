@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "synthetic": true,
+  "date_format": "DD-MM-YYYY",
+  "decimal_fields_are_strings": true,
+  "canonical_schema": [
+    "supplier_gstin",
+    "supplier_name",
+    "invoice_number",
+    "invoice_date",
+    "taxable_value",
+    "igst",
+    "cgst",
+    "sgst",
+    "cess",
+    "invoice_value"
+  ],
+  "column_mapping": {
+    "supplier_gstin": "supplier_gstin",
+    "supplier_name": "supplier_name",
+    "invoice_number": "invoice_number",
+    "invoice_date": "invoice_date",
+    "taxable_value": "taxable_value",
+    "igst": "igst",
+    "cgst": "cgst",
+    "sgst": "sgst",
+    "cess": "cess",
+    "invoice_value": "invoice_value"
+  },
+  "source": "synthetic GSTR-2B fixture",
+  "verification_note": "Fixture columns are already canonical; verify any production mapping against the official GSTR-2B export."
+}

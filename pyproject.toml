@@ -1,0 +1,28 @@
+[project]
+name = "itc-guard"
+version = "0.1.0"
+description = "Deterministic purchase-register and GSTR-2B reconciliation for input tax credit review."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "langgraph==0.6.11",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==8.4.2",
+]
+
+[project.scripts]
+itcguard = "itcguard.cli:main"
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/itcguard"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
