@@ -61,7 +61,7 @@ The exact GSTR-2B export layout has not been verified in this project. **Check a
 
 ## Planned CLI usage
 
-The shipped MVP will provide:
+The CLI MVP is available now:
 
 ```bash
 itcguard reconcile \
@@ -71,7 +71,12 @@ itcguard reconcile \
   --out reports
 ```
 
-The current CLI only defines and validates this command shape; reconciliation is being implemented in the next session.
+The command ingests both sources, runs the deterministic matcher, prints status counts and ITC-at-risk totals, and writes:
+
+- `reports/report.json` — complete machine-readable reconciliation report
+- `reports/supplier_drafts.json` — reserved output for the agent drafting stage
+
+For the bundled synthetic fixtures, the current report contains 32 matched results, 3 amount mismatches, 1 books-only invoice, 2 GSTR-2B-only invoices, 3 possible matches, and 1 duplicate. The total ITC at risk is ₹4,206.00.
 
 ## Configuration
 
