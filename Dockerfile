@@ -13,7 +13,7 @@ RUN apt-get update \
     && apt-get install --no-install-recommends --yes make \
     && rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml uv.lock README.md ./
+COPY pyproject.toml uv.lock README.md .python-version ./
 COPY src ./src
 COPY tests ./tests
 COPY fixtures ./fixtures
