@@ -108,6 +108,10 @@ class ReconciliationReport:
     counts: dict[str, int] = field(default_factory=dict)
     total_itc_at_risk: Decimal = Decimal("0")
     per_supplier_itc_at_risk: dict[str, Decimal] = field(default_factory=dict)
+    confirmed_itc_at_risk: Decimal = Decimal("0")
+    potential_itc_at_risk: Decimal = Decimal("0")
+    per_supplier_confirmed_itc_at_risk: dict[str, Decimal] = field(default_factory=dict)
+    per_supplier_potential_itc_at_risk: dict[str, Decimal] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         self.total_itc_at_risk = as_decimal(
@@ -118,6 +122,16 @@ class ReconciliationReport:
             supplier: as_decimal(amount, field_name="supplier_itc_at_risk")
             for supplier, amount in self.per_supplier_itc_at_risk.items()
         }
+        self.confirmed_itc_at_risk = as_decimal(self.confirmed_itc_at_risk, field_name="confirmed_itc_at_risk")
+        self.potential_itc_at_risk = as_decimal(self.potential_itc_at_risk, field_name="potential_itc_at_risk")
+        self.per_supplier_confirmed_itc_at_risk = {
+            supplier: as_decimal(amount, field_name="supplier_confirmed_itc_at_risk")
+            for supplier, amount in self.per_supplier_confirmed_itc_at_risk.items()
+        }
+        self.per_supplier_potential_itc_at_risk = {
+            supplier: as_decimal(amount, field_name="supplier_potential_itc_at_risk")
+            for supplier, amount in self.per_supplier_potential_itc_at_risk.items()
+        }
 
     @classmethod
     def from_results(
@@ -127,21 +141,36 @@ class ReconciliationReport:
     ) -> "ReconciliationReport":
         counts: dict[str, int] = {}
         per_supplier: dict[str, Decimal] = {}
-        total = Decimal("0")
+        per_supplier_confirmed: dict[str, Decimal] = {}
+        per_supplier_potential: dict[str, Decimal] = {}
+        confirmed = Decimal("0")
+        potential = Decimal("0")
         for result in results:
             status = result.status.value
             counts[status] = counts.get(status, 0) + 1
-            total += result.itc_at_risk
+            is_potential = result.status is MatchStatus.POSSIBLE_MATCH
+            if is_potential:
+                potential += result.itc_at_risk
+            else:
+                confirmed += result.itc_at_risk
             supplier = (result.books_invoice or result.gstr2b_invoice)
             if supplier is not None and result.itc_at_risk:
                 per_supplier[supplier.supplier_name] = (
                     per_supplier.get(supplier.supplier_name, Decimal("0"))
                     + result.itc_at_risk
                 )
+                destination = per_supplier_potential if is_potential else per_supplier_confirmed
+                destination[supplier.supplier_name] = (
+                    destination.get(supplier.supplier_name, Decimal("0")) + result.itc_at_risk
+                )
         return cls(
             results=results,
             supplier_drafts=supplier_drafts or {},
             counts=counts,
-            total_itc_at_risk=total,
+            total_itc_at_risk=confirmed + potential,
             per_supplier_itc_at_risk=per_supplier,
+            confirmed_itc_at_risk=confirmed,
+            potential_itc_at_risk=potential,
+            per_supplier_confirmed_itc_at_risk=per_supplier_confirmed,
+            per_supplier_potential_itc_at_risk=per_supplier_potential,
         )

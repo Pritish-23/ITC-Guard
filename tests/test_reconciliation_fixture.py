@@ -4,7 +4,7 @@ from pathlib import Path
 
 from itcguard.ingest import ingest_invoices
 from itcguard.matcher import reconcile
-from itcguard.models import InvoiceSource, MatchStatus
+from itcguard.models import InvoiceSource, MatchStatus, ReconciliationReport
 
 
 FIXTURES = Path(__file__).parents[1] / "fixtures"
@@ -103,3 +103,11 @@ def test_default_fixture_reconciliation_is_reproducible() -> None:
         ]
 
     assert shape(first) == shape(second)
+
+
+def test_default_fixture_report_risk_breakdown() -> None:
+    report = ReconciliationReport.from_results(_fixture_results())
+    assert report.confirmed_itc_at_risk == Decimal("912.00")
+    assert report.potential_itc_at_risk == Decimal("3294.00")
+    assert report.total_itc_at_risk == Decimal("4206.00")
+    assert report.total_itc_at_risk == report.confirmed_itc_at_risk + report.potential_itc_at_risk
