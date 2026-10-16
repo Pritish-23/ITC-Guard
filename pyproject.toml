@@ -9,6 +9,7 @@ dependencies = [
     "fastapi==0.143.2",
     "langgraph==1.2.15",
     "starlette==1.8.0",
+    "streamlit==1.57.0",
     "uvicorn==0.54.0",
 ]
 

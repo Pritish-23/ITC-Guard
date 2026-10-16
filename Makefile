@@ -1,4 +1,4 @@
-.PHONY: test run demo api
+.PHONY: test run demo api ui
 
 UV_RUN = UV_LINK_MODE=copy uv run --offline
 
@@ -13,3 +13,6 @@ demo:
 
 api:
 	$(UV_RUN) uvicorn itcguard.api:app --host 0.0.0.0 --port 8000
+
+ui:
+	$(UV_RUN) streamlit run src/itcguard/ui.py

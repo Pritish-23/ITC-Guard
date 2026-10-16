@@ -101,6 +101,25 @@ Open <http://localhost:8000/report> to view the bundled report. The API also exp
 
 The API has no authentication, database, or network provider. It is intended for local demonstration only.
 
+## Streamlit user interface
+
+For users who prefer a visual workflow over the CLI or API, run the local Streamlit interface:
+
+```bash
+make ui
+```
+
+Then open <http://localhost:8501>. The UI supports:
+
+- Running the bundled synthetic demo with one click
+- Uploading a purchase-register CSV
+- Uploading a GSTR-2B CSV or JSON export
+- Uploading an optional JSON column mapping
+- Viewing confirmed, potential, and total exposure
+- Reviewing status counts, supplier risk, invoice explanations, and grouped drafts
+
+Uploaded files are processed locally through the same deterministic matcher and offline agent graph. They are stored only in temporary files for the duration of the reconciliation run; no data is sent to a remote service.
+
 ## Configuration
 
 Copy `.env.example` to `.env` for local configuration if needed. The default provider is always the offline mock. No credentials or real provider keys belong in this repository.
