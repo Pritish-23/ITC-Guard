@@ -80,6 +80,23 @@ For the bundled synthetic fixtures, the current report contains 32 matched resul
 
 The agent pipeline is fully offline by default: resolver suggestions, explanations, and grouped drafts use the deterministic `MockProvider`; the reviewer checks grounding and safety, retries once, and falls back to a safe template when generated text is invalid.
 
+## Optional FastAPI demo
+
+The CLI remains the primary interface, but the same flow is available as a small local FastAPI demo:
+
+```bash
+make api
+```
+
+Open <http://localhost:8000/report> to view the bundled report. The API also exposes:
+
+- `GET /health` — health check
+- `GET /` — demo landing page
+- `POST /reconcile` — JSON report using bundled fixtures by default
+- `GET /report` — readable HTML report with counts, explanations, and supplier drafts
+
+The API has no authentication, database, or network provider. It is intended for local demonstration only.
+
 ## Configuration
 
 Copy `.env.example` to `.env` for local configuration if needed. The default provider is always the offline mock. No credentials or real provider keys belong in this repository.
