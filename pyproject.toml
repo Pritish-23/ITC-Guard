@@ -5,9 +5,11 @@ description = "Deterministic purchase-register and GSTR-2B reconciliation for in
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "langgraph==0.6.11",
-    "fastapi==0.116.1",
-    "uvicorn==0.35.0",
+    "anyio==4.15.1",
+    "fastapi==0.143.2",
+    "langgraph==1.2.15",
+    "starlette==1.8.0",
+    "uvicorn==0.54.0",
 ]
 
 [dependency-groups]

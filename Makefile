@@ -1,13 +1,15 @@
 .PHONY: test run demo api
 
+UV_RUN = UV_LINK_MODE=copy uv run --offline
+
 test:
-	uv run --offline pytest
+	$(UV_RUN) pytest
 
 run:
-	uv run --offline itcguard --help
+	$(UV_RUN) itcguard --help
 
 demo:
-	uv run --offline itcguard reconcile --books fixtures/purchase_register.csv --gstr2b fixtures/gstr2b.csv --mapping fixtures/mappings/purchase_register.json --out reports
+	$(UV_RUN) itcguard reconcile --books fixtures/purchase_register.csv --gstr2b fixtures/gstr2b.csv --mapping fixtures/mappings/purchase_register.json --out reports
 
 api:
-	uv run --offline uvicorn itcguard.api:app --host 0.0.0.0 --port 8000
+	$(UV_RUN) uvicorn itcguard.api:app --host 0.0.0.0 --port 8000
