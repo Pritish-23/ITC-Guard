@@ -2,20 +2,20 @@
 
 ITC Guard helps small business owners, accountants, and bookkeepers reconcile a purchase register against a GSTR-2B export. It flags missing and mismatched invoices, quantifies input tax credit (ITC) at risk in rupees, explains each issue in plain English, and drafts supplier follow-ups.
 
-This repository is being built for the **OmniRush Frontier Buildathon 2026**, Agents & Automation track. The project is currently at the reproducible skeleton and synthetic-fixture stage; the deterministic ingest and matching engine is the next implementation step.
+This repository is built for the **OmniRush Frontier Buildathon 2026**, Agents & Automation track. The deterministic ingest, matching, reporting, offline agent workflow, CLI, and local FastAPI demo are implemented against synthetic fixtures.
 
 ## Design principles
 
 - Money-critical matching is deterministic Python code, not an LLM decision.
 - All money values use `Decimal`, never binary floating point.
-- The default LLM provider will be a deterministic, offline mock.
+- The default LLM provider is a deterministic, offline mock.
 - Any future resolver suggestion remains a human-confirmation suggestion and does not silently overwrite the deterministic match status.
 - Reviewer guardrails will reject explanations or drafts containing invoice numbers, dates, GSTINs, or rupee amounts that are not present in the supplier's underlying data.
 
 ## Current repository layout
 
 ```text
-src/itcguard/       Python package and CLI scaffold
+src/itcguard/       Python package, CLI, API, matcher, and agent graph
 tests/              Offline pytest checks
 fixtures/           Synthetic CSV/JSON data and mapping examples
 Dockerfile          Reproducible Python 3.12 image
@@ -44,7 +44,7 @@ docker build -t itcguard .
 docker run --rm --network none itcguard make test
 ```
 
-The Dockerfile installs `make`, copies the lockfile and project files, and performs dependency installation during the image build. The container's default command is `make test`.
+The Dockerfile installs `make`, copies the lockfile and project files, and performs dependency installation during the image build. The container's default command is `make test`. The project owner verified both Docker build and `docker run --rm --network none itcguard make test` locally; those checks were not run by this worker.
 
 ## Fixtures and mappings
 
@@ -59,7 +59,7 @@ taxable_value, igst, cgst, sgst, cess, invoice_value
 
 The exact GSTR-2B export layout has not been verified in this project. **Check and update the mapping against the official GSTR-2B format before using real data.** This project is not a GST portal integration.
 
-## Planned CLI usage
+## CLI usage
 
 The CLI MVP is available now:
 
@@ -76,11 +76,15 @@ The command ingests both sources, runs the deterministic matcher and offline Lan
 - `reports/report.json` — complete machine-readable reconciliation report
 - `reports/supplier_drafts.json` — one reviewed, grouped draft per affected supplier
 
-For the bundled synthetic fixtures, the current report contains 32 matched results, 3 amount mismatches, 1 books-only invoice, 2 GSTR-2B-only invoices, 3 possible matches, and 1 duplicate. The total ITC at risk is ₹4,206.00.
+For the bundled synthetic fixtures, the current report contains 32 matched results, 3 amount mismatches, 1 books-only invoice, 2 GSTR-2B-only invoices, 3 possible matches, and 1 duplicate. It reports ₹912.00 of confirmed ITC risk, ₹3,294.00 of potential risk from unresolved possible matches, and ₹4,206.00 total exposure. Possible-match exposure is shown separately and is not presented as confirmed loss.
 
 The agent pipeline is fully offline by default: resolver suggestions, explanations, and grouped drafts use the deterministic `MockProvider`; the reviewer checks grounding and safety, retries once, and falls back to a safe template when generated text is invalid.
 
-## Optional FastAPI demo
+### Agent graph
+
+The workflow is a small offline graph: ingest the books and GSTR-2B files, normalize records, deterministically match and reconcile invoices, optionally resolve suggestions with `MockProvider`, generate grounded explanations, group supplier issues, draft follow-ups, and review the generated text before serializing the report.
+
+## FastAPI API and HTML report
 
 The CLI remains the primary interface, but the same flow is available as a small local FastAPI demo:
 
@@ -109,7 +113,7 @@ Copy `.env.example` to `.env` for local configuration if needed. The default pro
 - Credit notes, debit notes, reverse charge, and other special cases
 - Legal or tax advice; ITC Guard flags and explains data differences but does not advise
 
-FastAPI reporting is intentionally deferred until the CLI flow is stable. A polished CLI is the minimum shipped interface.
+FastAPI reporting is implemented as a local demonstration surface; the CLI and API share the same deterministic reconciliation flow.
 
 ## Buildathon workflow
 

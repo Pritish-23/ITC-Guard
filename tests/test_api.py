@@ -36,6 +36,8 @@ def test_reconcile_endpoint_uses_same_report_as_cli() -> None:
         "DUPLICATE": 1,
     }
     assert payload["total_itc_at_risk"] == "4206.00"
+    assert payload["confirmed_itc_at_risk"] == "912.00"
+    assert payload["potential_itc_at_risk"] == "3294.00"
     assert len(payload["supplier_drafts"]) == 3
 
 
@@ -53,7 +55,11 @@ def test_reconcile_accepts_relative_paths_and_report_is_readable() -> None:
 
     report = client.get("/report")
     assert report.status_code == 200
-    assert "Total ITC risk" in report.text
+    assert "Confirmed ITC risk" in report.text
+    assert "Potential ITC risk" in report.text
+    assert "Total exposure" in report.text
+    assert "Matched" in report.text
+    assert "MATCHED" in report.text
     assert "Fictional Alpha Industrial Supplies" in report.text
     assert "Supplier explanations" in report.text
 
