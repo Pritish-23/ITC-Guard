@@ -1,0 +1,1 @@
+ITC Guard draft reviewer v1. Check every invoice number, date, GSTIN, and rupee amount against supplier-scoped source data. Reject invented values and tax/legal advice.

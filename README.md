@@ -71,12 +71,14 @@ itcguard reconcile \
   --out reports
 ```
 
-The command ingests both sources, runs the deterministic matcher, prints status counts and ITC-at-risk totals, and writes:
+The command ingests both sources, runs the deterministic matcher and offline LangGraph agent pipeline, prints status counts and ITC-at-risk totals, and writes:
 
 - `reports/report.json` — complete machine-readable reconciliation report
-- `reports/supplier_drafts.json` — reserved output for the agent drafting stage
+- `reports/supplier_drafts.json` — one reviewed, grouped draft per affected supplier
 
 For the bundled synthetic fixtures, the current report contains 32 matched results, 3 amount mismatches, 1 books-only invoice, 2 GSTR-2B-only invoices, 3 possible matches, and 1 duplicate. The total ITC at risk is ₹4,206.00.
+
+The agent pipeline is fully offline by default: resolver suggestions, explanations, and grouped drafts use the deterministic `MockProvider`; the reviewer checks grounding and safety, retries once, and falls back to a safe template when generated text is invalid.
 
 ## Configuration
 

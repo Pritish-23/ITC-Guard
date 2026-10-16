@@ -6,8 +6,8 @@ import argparse
 import sys
 from pathlib import Path
 
+from .agents.graph import invoke_offline
 from .ingest import IngestionError, ingest_invoices
-from .matcher import reconcile
 from .models import InvoiceSource, ReconciliationReport
 from .report import write_report
 
@@ -30,10 +30,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def run_reconciliation(books_path: str, gstr2b_path: str, mapping_path: str) -> ReconciliationReport:
-    """Ingest both sources, reconcile them, and construct the report."""
+    """Ingest both sources and run the complete offline agent pipeline."""
     books = ingest_invoices(books_path, mapping_path, InvoiceSource.BOOKS)
     gstr2b = ingest_invoices(gstr2b_path, mapping_path, InvoiceSource.GSTR2B)
-    return ReconciliationReport.from_results(reconcile(books, gstr2b))
+    state = invoke_offline({"books_invoices": books, "gstr2b_invoices": gstr2b})
+    return state["report"]
 
 
 def _print_summary(report: ReconciliationReport, report_path: Path) -> None:

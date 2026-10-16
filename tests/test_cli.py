@@ -23,6 +23,11 @@ def test_reconcile_fixture_succeeds_with_expected_counts_and_risk(monkeypatch, t
     report = json.loads((tmp_path / "report.json").read_text())
     assert report["counts"] == {"MATCHED": 32, "AMOUNT_MISMATCH": 3, "MISSING_IN_2B": 1, "MISSING_IN_BOOKS": 2, "POSSIBLE_MATCH": 3, "DUPLICATE": 1}
     assert report["total_itc_at_risk"] == "4206.00"
+    assert set(report["supplier_drafts"]) == {
+        "Fictional Alpha Industrial Supplies",
+        "Fictional Beta Circuitry Works",
+        "Fictional Fable Logistics Lab",
+    }
     assert list(tmp_path.iterdir())
 
 def test_reconcile_missing_input_is_clean_nonzero_error(monkeypatch, tmp_path, capsys):

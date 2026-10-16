@@ -1,0 +1,2 @@
+ITC Guard resolver prompt v1.
+Review one deterministic POSSIBLE_MATCH using only books_invoice, gstr2b_invoice, and matcher_reason. Return JSON with suggestion, reason, and human_confirmation_required (true). Do not change status or invent facts.
