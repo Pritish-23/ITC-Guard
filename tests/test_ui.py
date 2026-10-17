@@ -99,3 +99,20 @@ def test_uploaded_json_bytes_flow_preserves_supplier_drafts_when_helper_is_expos
         result = reconcile_upload({"purchase_register.csv": csv_bytes, "gstr2b.json": json_bytes})
     report = result if isinstance(result, ReconciliationReport) else getattr(result, "report", result)
     assert isinstance(report.supplier_drafts, dict)
+
+
+def test_download_helpers_produce_complete_user_files():
+    ui = _ui()
+    report = _fixture_report()
+
+    report_json = ui.report_json_bytes(report).decode("utf-8")
+    assert '"total_itc_at_risk": "4206.00"' in report_json
+    assert '"supplier_drafts"' in report_json
+
+    invoice_csv = ui.invoice_review_csv_bytes(report).decode("utf-8")
+    assert "supplier,invoice,finding,amount_to_review,note" in invoice_csv
+    assert "Amounts differ" in invoice_csv
+
+    messages = ui.supplier_messages_text(report).decode("utf-8")
+    assert "Alpha Components" in messages
+    assert "Please review invoice ALPHA-004." in messages
